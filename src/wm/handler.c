@@ -3,6 +3,7 @@
 // Copyright (c) 2022 Antonin Hérault
 
 #include "wm/handler.h"
+#include "wm/manager.h"
 
 static int on_XError(Display* display, XErrorEvent* event) {
     char error_text[ERROR_MAX_LENGTH];
@@ -33,7 +34,7 @@ void on_unmap_notify(WM* manager, const XUnmapEvent event) {
         return;
     }
 
-    manager->unframe(event.window);
+    wm_unframe(event.window);
 }
 
 void on_configure_request(WM* manager, const XConfigureRequestEvent event) {
@@ -57,7 +58,7 @@ void on_configure_request(WM* manager, const XConfigureRequestEvent event) {
 }
 
 void on_map_request(WM* manager, const XMapRequestEvent event) {
-    manager->frame(event.window, false);
+    wm_frame(event.window, false);
     XMapWindow(manager->display, event.window);
 }
 

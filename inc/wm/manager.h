@@ -16,7 +16,7 @@ struct wm {
     Window* clients;
 };
 
-typedef struct wm* WM;
+typedef struct wm WM;
 
 /**
  * @brief Creates a new window manager object
