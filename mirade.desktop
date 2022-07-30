@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=mirade
-Comment=The mirade desktop environment
-Exec=/bin/mirade.sh
-Type=Application
-DesktopNames=mirade
-X-GDM-SessionRegisters=true

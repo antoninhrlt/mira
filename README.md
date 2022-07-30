@@ -1,2 +1,2 @@
 # mirade
-Lightweight Linux desktop environment with its own window manager
+Lightweight complete Linux desktop environment with its own window manager and utility applications
