@@ -28,16 +28,16 @@ void on_configure_notify(const XConfigureEvent event) {}
 
 void on_map_notify(const XMapEvent event) {}
 
-void on_unmap_notify(WM* manager, const XUnmapEvent event) {
+void on_unmap_notify(WM* wm, const XUnmapEvent event) {
     // Ignores reparented pre-existing window
-    if (event.event == manager->root) {
+    if (event.event == wm->root) {
         return;
     }
 
-    wm_unframe(event.window);
+    wm_unframe(wm, event.window);
 }
 
-void on_configure_request(WM* manager, const XConfigureRequestEvent event) {
+void on_configure_request(WM* wm, const XConfigureRequestEvent event) {
     // Setup configurations
     XWindowChanges changes;
     changes.x = event.x;
@@ -50,22 +50,22 @@ void on_configure_request(WM* manager, const XConfigureRequestEvent event) {
 
     // Configures the window from retrieved configurations
     XConfigureWindow(
-        manager->display, 
+        wm->display, 
         event.window, 
         event.value_mask, 
         &changes
     );
 }
 
-void on_map_request(WM* manager, const XMapRequestEvent event) {
+void on_map_request(WM* wm, const XMapRequestEvent event) {
     wm_frame(event.window, false);
-    XMapWindow(manager->display, event.window);
+    XMapWindow(wm->display, event.window);
 }
 
 void on_button_press(const XButtonPressedEvent event);
 
-void on_button_release(WM* manager, const XButtonReleasedEvent event) {
-    const Window frame = manager->clients[event.window];
+void on_button_release(WM* wm, const XButtonReleasedEvent event) {
+    const Window frame = wm->clients[event.window];
 
     Window returned_root;
     int x = 0;
@@ -76,7 +76,7 @@ void on_button_release(WM* manager, const XButtonReleasedEvent event) {
     u_int depth = 0;
 
     XGetGeometry(
-        manager->display,
+        wm->display,
         frame,
         &returned_root,
         &x,
@@ -88,42 +88,42 @@ void on_button_release(WM* manager, const XButtonReleasedEvent event) {
     );
 
     // Places the window at the top, over all the others
-    XRaiseWindow(manager->display, frame);
+    XRaiseWindow(wm->display, frame);
 }
 
-void on_key_press(WM* manager, const XKeyPressedEvent event) {
+void on_key_press(WM* wm, const XKeyPressedEvent event) {
     // Closes a window when ALT + F4 pressed
     if (
         (event.state & Mod1Mask) &&
-        (event.keycode == XKeysymToKeycode(manager->display, XK_F4))
+        (event.keycode == XKeysymToKeycode(wm->display, XK_F4))
     ) {
         // Terrible way to kill a window
         // TODO : Safe kill alternative when it's possible
-        XKillClient(manager->display, event.window);
+        XKillClient(wm->display, event.window);
         return;
     }
     
-    // Switches to another window when ALT + TAB pressed
-    if (
-        (event.state & Mod1Mask) &&
-        (event.keycode == XKeysymToKeycode(manager->display, XK_Tab))
-    ) {
-        auto i = manager->clients.find(event.window);
-        ++i;
-        if (i == manager->clients.end()) {
-            i = manager->clients.begin();
-        }
+    // // Switches to another window when ALT + TAB pressed
+    // if (
+    //     (event.state & Mod1Mask) &&
+    //     (event.keycode == XKeysymToKeycode(wm->display, XK_Tab))
+    // ) {
+    //     auto i = wm->clients.find(event.window);
+    //     ++i;
+    //     if (i == wm->clients.end()) {
+    //         i = wm->clients.begin();
+    //     }
 
-        XRaiseWindow(manager->display, i->second);
-        XSetInputFocus(
-            manager->display, 
-            i->first, 
-            RevertToPointerRoot, 
-            CurrentTime
-        );
+    //     XRaiseWindow(wm->display, i->second);
+    //     XSetInputFocus(
+    //         wm->display, 
+    //         i->first, 
+    //         RevertToPointerRoot, 
+    //         CurrentTime
+    //     );
 
-        return;
-    }
+    //     return;
+    // }
 
     // Others...
 }
