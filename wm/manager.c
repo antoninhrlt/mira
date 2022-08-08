@@ -14,7 +14,8 @@ WM new_wm(void) {
 
     Window root = DefaultRootWindow(display);
 
-    return WM {display, root, NULL};
+    WM wm = {display, root, NULL};
+    return wm;
 }
 
 void free_wm(WM* wm) {
@@ -42,7 +43,7 @@ void run_wm(WM* wm) {
 
     // --> should be : returned_root == _root 
     for (u_int i = 0; i < n_top_level_window; i += 1) {
-        wm_frame(top_level_windows[i], true);
+        wm_frame(wm, top_level_windows[i], true);
     }
 
     XFree(top_level_windows);
@@ -52,7 +53,7 @@ void run_wm(WM* wm) {
         XEvent event;
         XNextEvent(wm->display, &event);
         
-        switch event.type {
+        switch (event.type) {
             case CreateNotify:
                 on_create_notify(event.xcreatewindow);
                 break;
@@ -80,7 +81,7 @@ void wm_frame(WM* wm, Window window, bool is_created_before_wm) {
     XWindowAttributes window_attributes;
     XGetWindowAttributes(wm->display, window, &window_attributes);
 
-    if (created_before_wm) {
+    if (is_created_before_wm) {
         if (
             window_attributes.override_redirect || 
             window_attributes.map_state != IsViewable
@@ -143,18 +144,18 @@ void wm_frame(WM* wm, Window window, bool is_created_before_wm) {
 }
 
 void wm_unframe(WM* wm, Window window) {
-    const Window frame = wm->clients[window];
-    XUnmapWindow(wm->display, frame);
+    // const Window frame = wm->clients[window];
+    // XUnmapWindow(wm->display, frame);
 
-    XReparentWindow(
-        wm->display,
-        window,
-        wm->root,
-        0,
-        0,
-    );
+    // XReparentWindow(
+    //     wm->display,
+    //     window,
+    //     wm->root,
+    //     0,
+    //     0,
+    // );
 
-    XRemoveFromSaveSet(wm->display, window);
-    XDestroyWindow(wm->display, frame);
-    wm->clients.erase(window);
+    // XRemoveFromSaveSet(wm->display, window);
+    // XDestroyWindow(wm->display, frame);
+    // wm->clients.erase(window);
 }

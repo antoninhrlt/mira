@@ -5,19 +5,6 @@
 #include "wm/handler.h"
 #include "wm/manager.h"
 
-static int on_XError(Display* display, XErrorEvent* event) {
-    char error_text[ERROR_MAX_LENGTH];
-    XGetErrorText(display, event->error_code, error_text, ERROR_MAX_LENGTH);
-
-    // TODO : Print that error to the user
-    return 0;
-}
-
-static int on_wm_detected(Display* _display, XErrorEvent* _event) {
-    // TODO
-    return 0;
-}
-
 void on_create_notify(const XCreateWindowEvent event) {}
 
 void on_destroy_notify(const XDestroyWindowEvent event) {}
@@ -58,7 +45,7 @@ void on_configure_request(WM* wm, const XConfigureRequestEvent event) {
 }
 
 void on_map_request(WM* wm, const XMapRequestEvent event) {
-    wm_frame(event.window, false);
+    wm_frame(wm, event.window, false);
     XMapWindow(wm->display, event.window);
 }
 
