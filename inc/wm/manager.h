@@ -10,10 +10,12 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#include "wm/clients.h"
+
 struct wm {
     Display* display;
     Window root;
-    Window* clients;
+    ClientsMap clients;
 };
 
 typedef struct wm WM;

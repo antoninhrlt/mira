@@ -14,12 +14,15 @@ WM new_wm(void) {
 
     Window root = DefaultRootWindow(display);
 
-    WM wm = {display, root, NULL};
+    ClientsMap clients = new_clients_map();
+
+    WM wm = {display, root, clients};
     return wm;
 }
 
 void free_wm(WM* wm) {
     XCloseDisplay(wm->display);
+    free_clients_map(wm->clients);
 }
 
 void run_wm(WM* wm) {
@@ -118,7 +121,10 @@ void wm_frame(WM* wm, Window window, bool is_created_before_wm) {
     );
 
     XMapWindow(wm->display, frame);
-    wm->clients[window] = frame; // saves frame handler
+    
+    // Saves frame handler
+    Window* retrieve_client = get_client_from_map(wm->clients, window);
+    *retrieve_client = frame;
 
     // Closes window by ALT + F4
     XGrabKey(
@@ -144,18 +150,18 @@ void wm_frame(WM* wm, Window window, bool is_created_before_wm) {
 }
 
 void wm_unframe(WM* wm, Window window) {
-    // const Window frame = wm->clients[window];
-    // XUnmapWindow(wm->display, frame);
+    const Window* frame = get_client_from_map(wm->clients, window);
+    XUnmapWindow(wm->display, *frame);
 
-    // XReparentWindow(
-    //     wm->display,
-    //     window,
-    //     wm->root,
-    //     0,
-    //     0,
-    // );
+    XReparentWindow(
+        wm->display,
+        window,
+        wm->root,
+        0,
+        0
+    );
 
-    // XRemoveFromSaveSet(wm->display, window);
-    // XDestroyWindow(wm->display, frame);
-    // wm->clients.erase(window);
+    XRemoveFromSaveSet(wm->display, window);
+    XDestroyWindow(wm->display, frame);
+    erase_client_from_map(wm->clients, window);
 }

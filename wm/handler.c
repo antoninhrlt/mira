@@ -2,6 +2,7 @@
 // Under the MIT License
 // Copyright (c) 2022 Antonin Hérault
 
+#include "wm/clients.h"
 #include "wm/handler.h"
 #include "wm/manager.h"
 
@@ -52,7 +53,7 @@ void on_map_request(WM* wm, const XMapRequestEvent event) {
 void on_button_press(const XButtonPressedEvent event);
 
 void on_button_release(WM* wm, const XButtonReleasedEvent event) {
-    const Window frame = wm->clients[event.window];
+    const Window* frame = get_client_from_map(wm->clients, event.window);
 
     Window returned_root;
     int x = 0;
@@ -64,7 +65,7 @@ void on_button_release(WM* wm, const XButtonReleasedEvent event) {
 
     XGetGeometry(
         wm->display,
-        frame,
+        *frame,
         &returned_root,
         &x,
         &y,
@@ -90,27 +91,29 @@ void on_key_press(WM* wm, const XKeyPressedEvent event) {
         return;
     }
     
-    // // Switches to another window when ALT + TAB pressed
-    // if (
-    //     (event.state & Mod1Mask) &&
-    //     (event.keycode == XKeysymToKeycode(wm->display, XK_Tab))
-    // ) {
-    //     auto i = wm->clients.find(event.window);
-    //     ++i;
-    //     if (i == wm->clients.end()) {
-    //         i = wm->clients.begin();
-    //     }
+    // Switches to another window when ALT + TAB pressed
+    if (
+        (event.state & Mod1Mask) &&
+        (event.keycode == XKeysymToKeycode(wm->display, XK_Tab))
+    ) {
+        size_t i = get_client_index_from_map(wm->clients, event.window);
+        ++i;
+        if (i < 0 || i == wm->clients->length -1) {
+            i = 0;
+        }
 
-    //     XRaiseWindow(wm->display, i->second);
-    //     XSetInputFocus(
-    //         wm->display, 
-    //         i->first, 
-    //         RevertToPointerRoot, 
-    //         CurrentTime
-    //     );
+        Window client_i = *get_client_by_index_from_map(wm->clients, i);
 
-    //     return;
-    // }
+        XRaiseWindow(wm->display, client_i);
+        XSetInputFocus(
+            wm->display, 
+            client_i, 
+            RevertToPointerRoot, 
+            CurrentTime
+        );
+
+        return;
+    }
 
     // Others...
 }
