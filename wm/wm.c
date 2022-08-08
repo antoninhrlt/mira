@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <X11/Xutil.h>
+
 #include "wm/client.h"
 #include "wm/handler.h"
 #include "wm/wm.h"
@@ -34,7 +36,7 @@ void free_wm(WM* wm) {
 
 void run_wm(WM* wm) {
     // Checks for already-running WM on the system
-    XSetErrorHandler(&  on_wm_detected);
+    XSetErrorHandler(&on_wm_detected);
     XSelectInput(
         wm->display,
         wm->root,
@@ -76,6 +78,8 @@ void wm_frame_old_windows(WM* wm) {
         &length_top_level_windows
     );
 
+    assert(returned_root == wm->root);
+
     for (size_t i = 0; i < length_top_level_windows; ++i) {
         Client old_window = new_client(top_level_windows[i], true);
         wm_frame_window(wm, old_window);
@@ -86,6 +90,9 @@ void wm_frame_old_windows(WM* wm) {
 }
 
 void wm_frame_window(WM* wm, Client client) {
+    // Framed windows should not be framed again
+    assert(get_client_by_id(wm->clients, client.id) == NULL);
+
     // Retrieves window attributes
     XWindowAttributes window_attributes;
     XGetWindowAttributes(wm->display, client.window, &window_attributes);
@@ -125,7 +132,27 @@ void wm_frame_window(WM* wm, Client client) {
     // Saves client
     add_client(&wm->clients, client);
 
-    // TODO : XGrabKey() for moving and switching
+    // Grabs ALT + F4 event
+    XGrabKey(
+        wm->display,
+        XKeysymToKeycode(wm->display, XK_F4),
+        Mod1Mask,
+        client.window,
+        false,
+        GrabModeAsync,
+        GrabModeAsync
+    );
+
+    // Grabs ALT + TAB event
+    XGrabKey(
+        wm->display,
+        XKeysymToKeycode(wm->display, XK_Tab),
+        Mod1Mask,
+        client.window,
+        false,
+        GrabModeAsync,
+        GrabModeAsync
+    );
 }
 
 void wm_unframe_window(WM* wm, long client_id) {
