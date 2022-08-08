@@ -3,6 +3,7 @@
 // Copyright (c) 2022 Antonin Hérault
 
 #include "wm/handler.h"
+#include "wm/wm.h"
 
 void handle(WM* wm, XEvent event) {
     switch (event.type) {
@@ -66,7 +67,7 @@ void on_unmap_notify(WM* wm, const XUnmapEvent event) {
         return;
     }
 
-    //wm_unframe(wm, event.window);
+    wm_unframe_window(wm, event.window);
 }
 
 void on_configure_notify(const XConfigureEvent event) {

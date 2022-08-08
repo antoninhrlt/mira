@@ -6,12 +6,8 @@
 
 #include "wm/client.h"
 
-static long CURRENT_ID = 0x0;
-
-Client new_client(Window window, bool is_old) {
-    CURRENT_ID += 1;
-    
-    Client client = { CURRENT_ID, window, is_old };
+Client new_client(Window window, bool is_old) {    
+    Client client = { window /* id */, window, is_old };
     return client;
 }
 
