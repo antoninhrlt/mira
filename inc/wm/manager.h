@@ -41,11 +41,11 @@ void check_wm(WM* wm);
 /**
  * @brief Frames a window on the display
 */
-void wm_frame(Window window, bool is_created_before_wm);
+void wm_frame(WM* wm, Window window, bool is_created_before_wm);
 
 /**
  * @brief Unframes a window from the display
 */
-void wm_unframe(Window window);
+void wm_unframe(WM* wm, Window window);
 
 #endif // MIRADE_WM_MANAGER

@@ -27,14 +27,23 @@
  * @param display A window manager's member
  * @param event The error given by X11
 */
-static int on_XError(Display* display, XErrorEvent* event);
+static int on_XError(Display* display, XErrorEvent* event) {
+    char error_text[ERROR_MAX_LENGTH];
+    XGetErrorText(display, event->error_code, error_text, ERROR_MAX_LENGTH);
+
+    // TODO : Print that error to the user
+    return 0;
+}
 
 /**
  * @brief Determines if a window manager is already running on the system
  * @param display A window manager's member
  * @param event The error given by X11
 */
-static int on_wm_detected(Display* _display, XErrorEvent* _event);
+static int on_wm_detected(Display* _display, XErrorEvent* _event) {
+    // TODO
+    return 0;
+}
 
 void on_create_notify(const XCreateWindowEvent event);
 
