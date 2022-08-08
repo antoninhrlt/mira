@@ -11,9 +11,9 @@
 
 #define MAX_CLIENTS 1024
 
-#define WINDOW_BORDER_WIDTH 3
-#define WINDOW_BORDER_COLOR 0xff0000
-#define WINDOW_BG_COLOR 0x0000ff
+#define WINDOW_BORDER_WIDTH 1
+#define WINDOW_BORDER_COLOR 0xffffff
+#define WINDOW_BG_COLOR 0xff0000
 
 /**
  * A client is an easy way to manage an X window
