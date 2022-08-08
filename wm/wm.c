@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -33,7 +34,7 @@ void free_wm(WM* wm) {
 
 void run_wm(WM* wm) {
     // Checks for already-running WM on the system
-    XSetErrorHandler(&on_wm_detected);
+    XSetErrorHandler(&  on_wm_detected);
     XSelectInput(
         wm->display,
         wm->root,
@@ -61,14 +62,16 @@ void run_wm(WM* wm) {
 void wm_frame_old_windows(WM* wm) {
     XGrabServer(wm->display);
 
+    Window returned_root;
+    Window returned_parent;
     Window* top_level_windows;
     unsigned int length_top_level_windows;
 
     XQueryTree(
         wm->display, 
         wm->root, 
-        NULL, // root
-        NULL, // parent
+        &returned_root,
+        &returned_parent,
         &top_level_windows,
         &length_top_level_windows
     );

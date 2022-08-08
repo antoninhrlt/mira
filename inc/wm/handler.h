@@ -5,6 +5,8 @@
 #ifndef MIRADE_WM_HANDLER
 #define MIRADE_WM_HANDLER
 
+#include <stdlib.h>
+
 #include <X11/Xlib.h>
 
 #include "wm/client.h"
@@ -23,6 +25,7 @@ static int on_x_error(Display* display, XErrorEvent* event) {
     XGetErrorText(display, event->error_code, error_text, ERROR_MAX_LENGTH);
 
     // TODO : Print that error to the user
+    exit(1);
     return 0;
 }
 
@@ -33,6 +36,7 @@ static int on_x_error(Display* display, XErrorEvent* event) {
 */
 static int on_wm_detected(Display* _display, XErrorEvent* _event) {
     // TODO
+    exit(2);
     return 0;
 }
 
