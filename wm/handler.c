@@ -76,7 +76,7 @@ void on_button_release(WM* wm, const XButtonReleasedEvent event) {
     );
 
     // Places the window at the top, over all the others
-    XRaiseWindow(wm->display, frame);
+    XRaiseWindow(wm->display, *frame);
 }
 
 void on_key_press(WM* wm, const XKeyPressedEvent event) {
@@ -98,7 +98,7 @@ void on_key_press(WM* wm, const XKeyPressedEvent event) {
     ) {
         size_t i = get_client_index_from_map(wm->clients, event.window);
         ++i;
-        if (i < 0 || i == wm->clients->length -1) {
+        if (i == MAX_CLIENTS + 1 || i == wm->clients.length -1) {
             i = 0;
         }
 

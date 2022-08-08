@@ -6,6 +6,7 @@
 #define MIRADE_WM_CLIENTS
 
 #define MAX_CLIENTS 1024
+#define ERR_INDEX_CLIENT MAX_CLIENTS + 1
 
 #include <X11/Xlib.h>
 
@@ -20,7 +21,7 @@ struct clients_map {
     size_t length;
 };
 
-typedef struct clients_map* ClientsMap;
+typedef struct clients_map ClientsMap;
 
 /**
  * @brief Creates a new `ClientsMap` object with clients array initialized

@@ -162,6 +162,6 @@ void wm_unframe(WM* wm, Window window) {
     );
 
     XRemoveFromSaveSet(wm->display, window);
-    XDestroyWindow(wm->display, frame);
+    XDestroyWindow(wm->display, *frame);
     erase_client_from_map(wm->clients, window);
 }
