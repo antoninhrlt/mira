@@ -1,0 +1,8 @@
+# This is the X11 init file for "mirade"
+
+# Programs managed by the wm
+xclock &
+xeyes &
+xterm &
+
+exec build/mirawm

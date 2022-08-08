@@ -22,3 +22,10 @@ $(WM_BIN) : $(WM_OBJ)
 
 build/wm/%.o : wm/%.c
 	$(CC) $(CC_FLAGS) -c -o $@ $<
+
+wm_test : wm_build
+	xinit ./install/xinitrc -- /usr/bin/Xephyr \
+		:100 \
+		-ac \
+		-screen 1280x720 \
+		-host-cursor
