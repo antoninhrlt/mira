@@ -6,7 +6,7 @@
 
 include build/config.mk
 
-CC_FLAGS = $(CC_DEBUG_FLAGS) -I inc/wm
+CC_FLAGS = $(CC_DEBUG_FLAGS) -I inc/wm -I inc/
 
 OUT_DIR = build/out/wm
 
