@@ -9,22 +9,12 @@
 #include "wm/handler.h"
 #include "wm/wm.h"
 
-void init_handler(WM* wm) {
-    XGrabKey(
-        wm->display, 
-        XKeysymToKeycode(wm->display, XStringToKeysym("F1")), 
-        Mod1Mask,
-        DefaultRootWindow(wm->display), 
-        True, 
-        GrabModeAsync, 
-        GrabModeAsync
-    );
-    
-    XGrabButton(
+void init_handler(WM* wm) {    
+    xgrab_button(
         wm->display, 
         1, 
         Mod1Mask, 
-        DefaultRootWindow(wm->display), 
+        xdefault_root_window(wm->display), 
         True,
         ButtonPressMask | ButtonReleaseMask | PointerMotionMask, 
         GrabModeAsync, 
@@ -33,11 +23,11 @@ void init_handler(WM* wm) {
         None
     );
     
-    XGrabButton(
+    xgrab_button(
         wm->display, 
         3, 
         Mod1Mask, 
-        DefaultRootWindow(wm->display), 
+        xdefault_root_window(wm->display), 
         True,
         ButtonPressMask | ButtonReleaseMask | PointerMotionMask, 
         GrabModeAsync, 
@@ -81,7 +71,7 @@ void on_keypress(WM* wm) {
 
 void on_button_press(WM* wm) {
     // Select the window
-    XGetWindowAttributes(
+    xget_window_attributes(
         wm->display, 
         wm->event.xbutton.subwindow,
         &wm->window_attrs
@@ -102,7 +92,7 @@ void on_motion_notify(WM* wm) {
     int x_diff = wm->event.xbutton.x_root - wm->button_event.x_root;
     int y_diff = wm->event.xbutton.y_root - wm->button_event.y_root;
 
-    XMoveResizeWindow(
+    xmove_resize_window(
         wm->display, 
         wm->button_event.subwindow,
         wm->window_attrs.x + ( wm->button_event.button == 1 ? x_diff : 0 ),

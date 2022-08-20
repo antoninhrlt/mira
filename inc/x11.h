@@ -15,3 +15,9 @@
 
 #define xnext_event XNextEvent
 #define xraise_window   XRaiseWindow
+#define xcreate_simple_window   XCreateSimpleWindow
+#define xkeysym_to_keycode  XKeysymToKeycode
+#define xgrab_button    XGrabButton
+#define xdefault_root_window    DefaultRootWindow
+#define xget_window_attributes  XGetWindowAttributes
+#define xmove_resize_window XMoveResizeWindow
