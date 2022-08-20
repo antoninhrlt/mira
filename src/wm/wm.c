@@ -7,17 +7,15 @@
 
 #include "x11.h"
 
-#include "wm/structs.h"
+#include "wm/handler.h"
 #include "wm/wm.h"
 
 WM new_wm(void) {
     Display* display = xopen_display(NULL);
     XWindowAttributes window_attrs;
-    Handler handler = new_handler(NULL);
+    XEvent event;
 
-    WM wm = { display, window_attrs, handler };
-    wm.handler.wm = wm;
-
+    WM wm = { display, window_attrs, event };
     return wm;
 }
 
@@ -28,8 +26,8 @@ void free_wm(WM* self) {
 
 void run_wm(WM* self) {
     while (true) {
-        update_handler(&wm->handler);
-        handle(&wm->handler);
+        update_handler(self);
+        handle(self);
     }
 }
 

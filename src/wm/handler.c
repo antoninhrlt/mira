@@ -7,38 +7,27 @@
 #include "x11.h"
 
 #include "wm/handler.h"
-#include "wm/structs.h"
+#include "wm/wm.h"
 
-Handler new_handler(WM* wm) {
-    XEvent event;
-    Handler handler = { wm, event };
-    return handler;
+void update_handler(WM* wm) {
+    xnext_event(wm->display, &wm->event);
 }
 
-void free_handler(Handler* self) {
-    self->wm = (WM*) NULL;
-    self = (Handler*) NULL;
-}
-
-void update_handler(Handler* self) {
-    xnext_event(*(self->wm)->display, &self->event);
-}
-
-void handle(Handler* self) {
-    switch (self->event.type) {
+void handle(WM* wm) {
+    switch (wm->event.type) {
         case KeyPress:
-            on_keypress(self);
+            on_keypress(wm);
             break;
         default:
             break;     
     }
 }
 
-void on_keypress(Handler* self) {
-    assert(self->event.type == KeyPress);
+void on_keypress(WM* wm) {
+    assert(wm->event.type == KeyPress);
 
     // Shows up the window under the cursor 
-    if (self->event.xkey.subwindow != None) {
-        xraise_window(*(self->wm)->display, self->event.xkey.subwindow);
+    if (wm->event.xkey.subwindow != None) {
+        xraise_window(wm->display, wm->event.xkey.subwindow);
     }
 }

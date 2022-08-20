@@ -7,16 +7,13 @@
 
 #include "x11.h"
 
-#include "wm/structs.h"
-
-Handler new_handler(WM* wm);
-void free_handler(Handler* self);
+#include "wm/wm.h"
 
 /// Updates the `event` attribute by the caught next event on display
-void update_handler(Handler* self);
+void update_handler(WM* wm);
 /// Calls the right `on_...` function according to the retrieved event
-void handle(Handler* self);
+void handle(WM* wm);
 
-void on_keypress(Handler* self);
+void on_keypress(WM* wm);
 
 #endif // MIRA_HANDLER

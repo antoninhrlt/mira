@@ -7,7 +7,12 @@
 
 #include "x11.h"
 
-#include "wm/structs.h"
+typedef struct {
+    XDisplay* display;
+    /// The current retrieved event in the displaying loop
+    XWindowAttributes window_attrs;
+    XEvent event;
+} WM;
 
 WM new_wm(void);
 void free_wm(WM* self);
