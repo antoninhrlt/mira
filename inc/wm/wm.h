@@ -12,6 +12,7 @@ typedef struct {
     /// The current retrieved event in the displaying loop
     XWindowAttributes window_attrs;
     XEvent event;
+    XButtonEvent button_event;
 } WM;
 
 WM new_wm(void);

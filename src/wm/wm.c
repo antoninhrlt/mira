@@ -25,6 +25,8 @@ void free_wm(WM* self) {
 }
 
 void run_wm(WM* self) {
+    init_handler(self);
+    
     while (true) {
         update_handler(self);
         handle(self);
@@ -32,5 +34,5 @@ void run_wm(WM* self) {
 }
 
 void raise_window(WM* self, XWindow window) {
-
+    xraise_window(self->display, window);
 }
