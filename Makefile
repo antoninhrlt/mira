@@ -9,5 +9,8 @@ _init :
 
 build : _init wm_build
 
+run : build
+	xinit ./build/xinitrc
+
 test : build
-	Xephyr :100 -ac -screen 1280x720 -br &
+	Xephyr -ac -screen 1280x720 -br -reset -terminate 2> /dev/null :100 &
