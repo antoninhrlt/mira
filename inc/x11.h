@@ -30,5 +30,4 @@
 #define xset_input_focus    XSetInputFocus
 #define xmap_window XMapWindow
 #define xroot_window    XRootWindow
-#define xdefault_screen XDefaultScreen
 #define xselect_input   XSelectInput
