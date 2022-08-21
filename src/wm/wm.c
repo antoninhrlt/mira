@@ -61,47 +61,43 @@ void add_window(WM* self, XWindow window) {
 void remove_window(WM* self, XWindow window) {
     Client* client = self->head_client;
     
+    // Search through all the clients until the right one is found
     for (; client ; client = client->next_client) {
-        if (client->window != window) {
-            continue;
-        }
-
-        // Previous and next clients are null
-        if (
-            client->previous_client == NULL 
-            && client->next_client == NULL
-        ) {
-            free_client(self->head_client);
-            self->current_client = NULL;
+        if (client->window == window) {
             break;
         }
+    }
 
-        // Previous client is null
-        if (client->previous_client == NULL) {
-            self->head_client = client->next_client;
-            client->next_client->previous_client = NULL;
-            self->current_client = client->next_client;
-            
-            free_client(client);
-            break;
-        } 
+    // Here, the goal is to select the new "current window" because we remove 
+    // the current one
+
+    // Previous and next clients are null
+    if (
+        client->previous_client == NULL 
+        && client->next_client == NULL
+    ) {
+        free_client(self->head_client); // sets null
+        self->current_client = NULL;
+        return;
+    }
+
+    // Previous client is null
+    if (client->previous_client == NULL) {
+        self->head_client = client->next_client;
+        client->next_client->previous_client = NULL;
+        self->current_client = client->next_client;
     
-        // Next client
-        if (client->next_client == NULL) {
-            client->previous_client->next_client = NULL;
-            self->current_client = client->previous_client;
-            
-            free_client(client);
-            break;
-        }
-
-        // Nothing is null
+    } else if (client->next_client == NULL) {
+        client->previous_client->next_client = NULL;
+        self->current_client = client->previous_client;
+    
+    } else {
         client->previous_client->next_client = client->next_client;
         client->next_client->previous_client = client->previous_client;
         self->current_client = client->previous_client;
-
-        free_client(client);
-        break;
     }
+
+    free_client(client);
+    update_clients(self); // to focus on the new current window
 }
 

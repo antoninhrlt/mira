@@ -45,6 +45,10 @@ void set_client_defaults(Client* self, WM* wm) {
 }
 
 void tile_client(Client* self, WM* wm) {
+    if (wm->head_client == NULL) {
+        return;
+    }
+
     // Full-screen
     xmove_resize_window(
         wm->display,
@@ -60,6 +64,7 @@ void tile_client(Client* self, WM* wm) {
 
 void update_clients(WM* wm) {
     Client* client = wm->head_client;
+
     for (; client; client = client->next_client) {
         set_client_defaults(client, wm);
 

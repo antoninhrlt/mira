@@ -150,7 +150,12 @@ void on_configure_request(WM* wm, XConfigureRequestEvent event) {
     changes.sibling = event.above;
     changes.stack_mode = event.detail;
 
-    xconfigure_window(wm->display, event.window, event.value_mask, &changes);
+    xconfigure_window(
+        wm->display, 
+        event.window, 
+        event.value_mask, 
+        &changes
+    );
 }
 
 void on_configure_notify(WM* wm, XConfigureEvent event) {
@@ -160,7 +165,7 @@ void on_configure_notify(WM* wm, XConfigureEvent event) {
 void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
     Client* client = wm->head_client;
     
-    bool is_found = 0;
+    bool is_found = false;
     for (; client; client = client->next_client) {
         if (event.window == client->window) {
             is_found = true;
