@@ -8,8 +8,8 @@
 #include "x11.h"
 
 #define WINDOW_BORDER_WIDTH 2
-#define WINDOW_BORDER_FOCUSED   0x610e68
-#define WINDOW_BORDER_UNFOCUSED 0x2C0730
+#define WINDOW_BORDER_FOCUSED   0xe600ff
+#define WINDOW_BORDER_UNFOCUSED 0xf6a2ff
 
 typedef struct client   Client;
 struct client {

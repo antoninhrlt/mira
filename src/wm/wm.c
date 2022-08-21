@@ -47,15 +47,19 @@ void add_window(WM* self, XWindow window) {
         client->next_client = (Client*) NULL;
         client->previous_client = (Client*) NULL;
         self->head_client = client;
-    } else {
-        Client* t = self->head_client; 
-        for (; t->next_client; t = t->next_client);
-
-        client->next_client = (Client*) NULL;
-        client->previous_client = t;
         
-        t->next_client = client;
+        self->current_client = client;
+        return;
     }
+
+    Client* t = self->head_client; 
+    for (; t->next_client; t = t->next_client);
+
+    client->next_client = (Client*) NULL;
+    client->previous_client = t;
+    
+    t->next_client = client;
+    self->current_client = client;
 }
 
 void remove_window(WM* self, XWindow window) {
@@ -123,26 +127,12 @@ void tile(WM* self) {
 void update_current_client(WM* self) {
     Client* client = self->head_client;
 
-    for (; client; client = client->next_client) {
-        // Defines the properties for the current client
-        if (self->current_client == client) {
-            xset_window_border_width(
-                self->display, 
-                client->window, 
-                WINDOW_BORDER_WIDTH
-            );
-
-            xset_window_border(
-                self->display, 
-                client->window, 
-                WINDOW_BORDER_FOCUSED
-            );
-
-            xset_input_focus(self->display, client->window, RevertToParent, CurrentTime);
-            xraise_window(self->display, client->window);
-            
-            continue;
-        }
+    for (; client; client = client->next_client) {        
+        xset_window_border_width(
+            self->display, 
+            client->window, 
+            WINDOW_BORDER_WIDTH
+        );
 
         // Client is not the current client, sets it unfocused
         xset_window_border(
@@ -150,5 +140,25 @@ void update_current_client(WM* self) {
             client->window,
             WINDOW_BORDER_UNFOCUSED
         );
+
+        // Defines the properties for the current client
+        if (self->current_client == client) {
+            xset_window_border(
+                self->display, 
+                client->window, 
+                WINDOW_BORDER_FOCUSED
+            );
+
+            xset_input_focus(
+                self->display, 
+                client->window, 
+                RevertToParent, 
+                CurrentTime
+            );
+
+            xraise_window(self->display, client->window);
+            
+            continue;
+        }
     }
 }
