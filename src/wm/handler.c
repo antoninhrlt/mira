@@ -36,6 +36,12 @@ void init_handler(WM* wm) {
         None, 
         None
     );
+
+    xselect_input(
+        wm->display,
+        xroot_window(wm->display, xdefault_screen(wm->display)),
+        SubstructureNotifyMask | SubstructureRedirectMask
+    );
 }
 
 void update_handler(WM* wm) {
@@ -56,11 +62,14 @@ void handle(WM* wm) {
         case MotionNotify:
             on_motion_notify(wm);
             break;
-        case ConfigureRequest:
-            on_configure_request(wm, wm->event.xconfigurerequest);
-            break;
         case MapRequest:
             on_map_request(wm, wm->event.xmaprequest);
+            break;
+        case ConfigureNotify:
+            on_configure_notify(wm, wm->event.xconfigure);
+            break;
+        case ConfigureRequest:
+            on_configure_request(wm, wm->event.xconfigurerequest);
             break;
         case DestroyNotify:
             on_destroy_notify(wm, wm->event.xdestroywindow);
@@ -112,6 +121,22 @@ void on_motion_notify(WM* wm) {
     );
 }
 
+void on_map_request(WM* wm, XMapRequestEvent event) {
+    Client* client = wm->head_client;
+
+    for (; client; client = client->next_client) {
+        if (event.window == client->window) {
+            xmap_window(wm->display, event.window);
+            return;
+        }
+    }
+
+    add_window(wm, event.window);
+    xmap_window(wm->display, event.window);
+    tile(wm);
+    update_current_client(wm);
+}
+
 void on_configure_request(WM* wm, XConfigureRequestEvent event) {
     XWindowChanges changes;
 
@@ -124,6 +149,10 @@ void on_configure_request(WM* wm, XConfigureRequestEvent event) {
     changes.stack_mode = event.detail;
 
     xconfigure_window(wm->display, event.window, event.value_mask, &changes);
+}
+
+void on_configure_notify(WM* wm, XConfigureEvent event) {
+
 }
 
 void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
@@ -142,22 +171,6 @@ void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
     }
 
     remove_window(wm, event.window);
-    tile(wm);
-    update_current_client(wm);
-}
-
-void on_map_request(WM* wm, XMapRequestEvent event) {
-    Client* client = wm->head_client;
-
-    for (; client; client = client->next_client) {
-        if (event.window == client->window) {
-            xmap_window(wm->display, event.window);
-            return;
-        }
-    }
-
-    add_window(wm, event.window);
-    xmap_window(wm->display, event.window);
     tile(wm);
     update_current_client(wm);
 }
