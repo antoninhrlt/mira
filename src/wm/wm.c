@@ -33,10 +33,6 @@ void run_wm(WM* self) {
     }
 }
 
-void raise_window(WM* self, XWindow window) {
-    xraise_window(self->display, window);
-}
-
 void add_window(WM* self, XWindow window) {
     // Thanks https://github.com/pyknite/catwm/blob/master/catwm.c#L143
 
@@ -110,17 +106,26 @@ void remove_window(WM* self, XWindow window) {
     }
 }
 
-void tile(WM* self) {
-    // Only one window
-    if (self->head_client != NULL && self->head_client->next_client == NULL) {
-        xmove_resize_window(
-            self->display,
-            self->head_client->window,
-            0,
-            0,
-            xdisplay_width(self->display, xdefault_screen(self->display)) - 2,
-            xdisplay_height(self->display, xdefault_screen(self->display)) - 2
-        );
+void tile_current_window(WM* self) {
+    if (self->head_client == NULL) {
+        return;
+    }
+
+    Client* client = self->head_client;
+    for (; client; client = client->next_client) {
+        if (self->current_client == client) {
+            xmove_resize_window(
+                self->display,
+                client->window,
+                0,
+                0,
+                xdisplay_width(self->display, xdefault_screen(self->display)) 
+                    - WINDOW_BORDER_WIDTH * 2,
+                xdisplay_height(self->display, xdefault_screen(self->display)) 
+                    - WINDOW_BORDER_WIDTH * 2
+            );
+            return;
+        }
     }
 }
 
