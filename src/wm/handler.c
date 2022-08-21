@@ -7,6 +7,7 @@
 
 #include "x11.h"
 
+#include "wm/client.h"
 #include "wm/handler.h"
 #include "wm/wm.h"
 
@@ -133,8 +134,9 @@ void on_map_request(WM* wm, XMapRequestEvent event) {
 
     add_window(wm, event.window);
     xmap_window(wm->display, event.window);
-    tile(wm);
-    update_current_client(wm);
+    set_client_defaults(wm->current_client, wm);
+    tile_client(wm->current_client, wm);
+    update_client(wm->current_client, wm);
 }
 
 void on_configure_request(WM* wm, XConfigureRequestEvent event) {
@@ -171,6 +173,6 @@ void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
     }
 
     remove_window(wm, event.window);
-    tile(wm);
-    update_current_client(wm);
+    tile_client(wm->current_client, wm);
+    update_client(wm->current_client, wm);
 }

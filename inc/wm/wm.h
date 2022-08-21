@@ -9,7 +9,7 @@
 
 #include "wm/client.h"
 
-typedef struct {
+typedef struct wm {
     XDisplay* display;
     /// The current retrieved event in the displaying loop
     XWindowAttributes window_attrs;
@@ -26,11 +26,10 @@ void free_wm(WM* self);
 /// Creates a loop handling the event then let `handler` manages
 void run_wm(WM* self);
 /// Shows the window over the others
-void raise_window(WM* self, XWindow window);
 void add_window(WM* self, XWindow window);
 void remove_window(WM* self, XWindow window);
 
-void tile(WM* self);
+void tile_current_window(WM* self);
 void update_current_client(WM* self);
 
 #endif // MIRA_WM

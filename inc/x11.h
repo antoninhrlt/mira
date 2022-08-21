@@ -31,3 +31,4 @@
 #define xmap_window XMapWindow
 #define xroot_window    XRootWindow
 #define xselect_input   XSelectInput
+#define xset_window_background  XSetWindowBackground
