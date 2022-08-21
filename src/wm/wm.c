@@ -61,11 +61,17 @@ void add_window(WM* self, XWindow window) {
 void remove_window(WM* self, XWindow window) {
     Client* client = self->head_client;
     
+    bool is_found = true;
     // Search through all the clients until the right one is found
     for (; client ; client = client->next_client) {
         if (client->window == window) {
+            is_found = true;
             break;
         }
+    }
+
+    if (!is_found) {    
+        return;
     }
 
     // Here, the goal is to select the new "current window" because we remove 
@@ -100,4 +106,3 @@ void remove_window(WM* self, XWindow window) {
     free_client(client);
     update_clients(self); // to focus on the new current window
 }
-
