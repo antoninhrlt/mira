@@ -12,7 +12,6 @@
 
 #define xopen_display   XOpenDisplay
 #define xclose_display  XCloseDisplay
-
 #define xnext_event XNextEvent
 #define xraise_window   XRaiseWindow
 #define xcreate_simple_window   XCreateSimpleWindow
@@ -25,3 +24,8 @@
 #define xdisplay_width  XDisplayWidth
 #define xdisplay_height XDisplayHeight
 #define xdefault_screen  DefaultScreen
+#define xset_window_border  XSetWindowBorder
+#define xset_window_border_width    XSetWindowBorderWidth
+#define xset_window_border  XSetWindowBorder
+#define xset_input_focus    XSetInputFocus
+#define xmap_window XMapWindow

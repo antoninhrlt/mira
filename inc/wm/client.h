@@ -7,6 +7,10 @@
 
 #include "x11.h"
 
+#define WINDOW_BORDER_WIDTH 2
+#define WINDOW_BORDER_FOCUSED   0x610e68
+#define WINDOW_BORDER_UNFOCUSED 0x2C0730
+
 typedef struct client   Client;
 struct client {
     Client* next_client;

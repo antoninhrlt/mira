@@ -107,21 +107,48 @@ void remove_window(WM* self, XWindow window) {
 }
 
 void tile(WM* self) {
-    Client* client;
-
     // Only one window
-    if (wm->head_client != NULL && wm->head_client->next == NULL) {
+    if (self->head_client != NULL && self->head_client->next_client == NULL) {
         xmove_resize_window(
-            wm->display,
-            wm->head_client->window,
+            self->display,
+            self->head_client->window,
             0,
             0,
-            xdisplay_width(wm->display, xdefault_screen(wm->display)) - 2;
-            xdisplay_height(wm->display, xdefault_screen(wm->display)) - 2;
+            xdisplay_width(self->display, xdefault_screen(self->display)) - 2,
+            xdisplay_height(self->display, xdefault_screen(self->display)) - 2
         );
     }
 }
 
 void update_current_client(WM* self) {
+    Client* client = self->head_client;
 
+    for (; client; client = client->next_client) {
+        // Defines the properties for the current client
+        if (self->current_client == client) {
+            xset_window_border_width(
+                self->display, 
+                client->window, 
+                WINDOW_BORDER_WIDTH
+            );
+
+            xset_window_border(
+                self->display, 
+                client->window, 
+                WINDOW_BORDER_FOCUSED
+            );
+
+            xset_input_focus(self->display, client->window, RevertToParent, CurrentTime);
+            xraise_window(self->display, client->window);
+            
+            continue;
+        }
+
+        // Client is not the current client, sets it unfocused
+        xset_window_border(
+            self->display,
+            client->window,
+            WINDOW_BORDER_UNFOCUSED
+        );
+    }
 }

@@ -3,6 +3,7 @@
 // Copyright (c) 2022 Antonin Hérault
 
 #include <assert.h>
+#include <stdbool.h>
 
 #include "x11.h"
 
@@ -57,6 +58,10 @@ void handle(WM* wm) {
             break;
         case ConfigureRequest:
             on_configure_request(wm, wm->event.xconfigurerequest);
+            break;
+        case MapRequest:
+            on_map_request(wm, wm->event.xmaprequest);
+            break;
         case DestroyNotify:
             on_destroy_notify(wm, wm->event.xdestroywindow);
             break;
@@ -126,7 +131,7 @@ void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
     
     bool is_found = 0;
     for (; client; client = client->next_client) {
-        if (event->window == client->window) {
+        if (event.window == client->window) {
             is_found = true;
             break;
         }
@@ -136,7 +141,23 @@ void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
         return;
     }
 
-    remove_window(event->window);
+    remove_window(wm, event.window);
+    tile(wm);
+    update_current_client(wm);
+}
+
+void on_map_request(WM* wm, XMapRequestEvent event) {
+    Client* client = wm->head_client;
+
+    for (; client; client = client->next_client) {
+        if (event.window == client->window) {
+            xmap_window(wm->display, event.window);
+            return;
+        }
+    }
+
+    add_window(wm, event.window);
+    xmap_window(wm->display, event.window);
     tile(wm);
     update_current_client(wm);
 }
