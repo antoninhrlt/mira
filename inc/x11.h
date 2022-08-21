@@ -21,3 +21,7 @@
 #define xdefault_root_window    DefaultRootWindow
 #define xget_window_attributes  XGetWindowAttributes
 #define xmove_resize_window XMoveResizeWindow
+#define xconfigure_window   XConfigureWindow
+#define xdisplay_width  XDisplayWidth
+#define xdisplay_height XDisplayHeight
+#define xdefault_screen  DefaultScreen
