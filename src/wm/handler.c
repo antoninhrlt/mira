@@ -178,5 +178,6 @@ void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
     }
 
     remove_window(wm, event.window);
+    printf("HAPPY 4\n");
     update_clients(wm);
 }

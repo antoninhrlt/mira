@@ -74,6 +74,8 @@ void remove_window(WM* self, XWindow window) {
         return;
     }
 
+    printf("HAPPY 1\n");
+
     // Here, the goal is to select the new "current window" because we remove 
     // the current one
 
@@ -103,6 +105,10 @@ void remove_window(WM* self, XWindow window) {
         self->current_client = client->previous_client;
     }
 
+    printf("HAPPY 2\n");
+
     free_client(client);
     update_clients(self); // to focus on the new current window
+
+    printf("HAPPY 3\n");
 }
