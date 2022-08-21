@@ -19,5 +19,6 @@ void on_keypress(WM* wm);
 void on_button_press(WM* wm);
 void on_button_release(WM* wm);
 void on_motion_notify(WM* wm);
+void on_configure_request(WM* wm,XConfigureRequestEvent event);
 
 #endif // MIRA_HANDLER

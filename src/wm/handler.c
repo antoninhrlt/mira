@@ -55,6 +55,11 @@ void handle(WM* wm) {
         case MotionNotify:
             on_motion_notify(wm);
             break;
+        case ConfigureRequest:
+            on_configure_request(wm, wm->event.xconfigurerequest);
+        case DestroyNotify:
+            on_destroy_notify(wm, wm->event.xdestroywindow);
+            break;
         default:
             break;     
     }
@@ -100,4 +105,38 @@ void on_motion_notify(WM* wm) {
         MAX(1, wm->window_attrs.width + ( wm->button_event.button == 3 ? x_diff : 0 )),
         MAX(1, wm->window_attrs.height + ( wm->button_event.button == 3 ? y_diff : 0 ))
     );
+}
+
+void on_configure_request(WM* wm, XConfigureRequestEvent event) {
+    XWindowChanges changes;
+
+    changes.x = event.x;
+    changes.y = event.y;
+    changes.width = event.width;
+    changes.height = event.height;
+    changes.border_width = event.border_width;
+    changes.sibling = event.above;
+    changes.stack_mode = event.detail;
+
+    xconfigure_window(wm->display, event.window, event.value_mask, &changes);
+}
+
+void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
+    Client* client = wm->head_client;
+    
+    bool is_found = 0;
+    for (; client; client = client->next_client) {
+        if (event->window == client->window) {
+            is_found = true;
+            break;
+        }
+    }
+
+    if (is_found == false) {
+        return;
+    }
+
+    remove_window(event->window);
+    tile(wm);
+    update_current_client(wm);
 }
