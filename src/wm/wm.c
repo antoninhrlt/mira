@@ -61,7 +61,6 @@ void add_window(WM* self, XWindow window) {
 void remove_window(WM* self, XWindow window) {
     Client* client = self->head_client;
     
-    // CHANGE THIS UGLY CODE
     for (; client ; client = client->next_client) {
         if (client->window != window) {
             continue;

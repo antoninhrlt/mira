@@ -82,14 +82,11 @@ void handle(WM* wm) {
 
 void on_keypress(WM* wm) {
     assert(wm->event.type == KeyPress);
-
-    // Shows up the window under the cursor 
-    if (wm->event.xkey.subwindow != None) {
-        xraise_window(wm->display, wm->event.xkey.subwindow);
-    }
 }
 
 void on_button_press(WM* wm) {
+    assert(wm->event.type == ButtonPress);
+
     // Select the window
     xget_window_attributes(
         wm->display, 
@@ -101,6 +98,8 @@ void on_button_press(WM* wm) {
 }
 
 void on_button_release(WM* wm) {
+    assert(wm->event.type == ButtonRelease);
+
     // Unselect the window
     wm->button_event.subwindow = None;
 }
@@ -108,6 +107,8 @@ void on_button_release(WM* wm) {
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 void on_motion_notify(WM* wm) {
+    assert(wm->event.type == MotionNotify);
+
     // Move a window from the cursor's position
     int x_diff = wm->event.xbutton.x_root - wm->button_event.x_root;
     int y_diff = wm->event.xbutton.y_root - wm->button_event.y_root;
@@ -134,9 +135,8 @@ void on_map_request(WM* wm, XMapRequestEvent event) {
 
     add_window(wm, event.window);
     xmap_window(wm->display, event.window);
-    set_client_defaults(wm->current_client, wm);
     tile_client(wm->current_client, wm);
-    update_client(wm->current_client, wm);
+    update_clients(wm);
 }
 
 void on_configure_request(WM* wm, XConfigureRequestEvent event) {
@@ -168,11 +168,10 @@ void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
         }
     }
 
-    if (is_found == false) {
+    if (!is_found) {
         return;
     }
 
     remove_window(wm, event.window);
-    tile_client(wm->current_client, wm);
-    update_client(wm->current_client, wm);
+    update_clients(wm);
 }
