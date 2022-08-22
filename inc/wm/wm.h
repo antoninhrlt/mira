@@ -28,8 +28,6 @@ void run_wm(WM* self);
 /// Shows the window over the others
 void add_window(WM* self, XWindow window);
 void remove_window(WM* self, XWindow window);
-
-void tile_current_window(WM* self);
-void update_current_client(WM* self);
+void switch_between_windows(WM* self, XWindow window);
 
 #endif // MIRA_WM

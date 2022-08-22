@@ -27,5 +27,6 @@ void free_client(Client* self);
 void set_client_defaults(Client* self, WM* wm);
 void tile_client(Client* self, WM* wm);
 void update_clients(WM* wm);
+void kill_client(Client* self, WM* wm);
 
 #endif // MIRA_CLIENT

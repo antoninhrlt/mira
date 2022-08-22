@@ -15,7 +15,7 @@ void update_handler(WM* wm);
 /// Calls the right `on_...` function according to the retrieved event
 void handle(WM* wm);
 
-void on_keypress(WM* wm);
+void on_keypress(WM* wm, XKeyEvent event);
 void on_button_press(WM* wm, XButtonEvent event);
 void on_button_release(WM* wm);
 void on_motion_notify(WM* wm);

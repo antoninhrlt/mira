@@ -89,3 +89,32 @@ void update_clients(WM* wm) {
     }
 }
 
+void kill_client(Client* self, WM* wm) {
+    if (self == NULL) {
+        return;
+    }
+
+    XEvent kill_event;
+    kill_event.type = ClientMessage;
+    kill_event.xclient.window = wm->current_client->window;
+    kill_event.xclient.message_type = xinter_atom(
+        wm->display, 
+        "WM_PROTOCOLS", 
+        True
+    );
+    kill_event.xclient.format = 32;
+    kill_event.xclient.data.l[0] = xinter_atom(
+        wm->display, 
+        "WM_DELETE_WINDOW", 
+        True
+    );
+    kill_event.xclient.data.l[1] = CurrentTime;
+
+    xsend_event(
+        wm->display, 
+        wm->current_client->window, 
+        False, 
+        NoEventMask, 
+        &kill_event
+    );
+}

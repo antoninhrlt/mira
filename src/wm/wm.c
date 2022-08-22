@@ -106,3 +106,20 @@ void remove_window(WM* self, XWindow window) {
     free_client(client);
     update_clients(self); // to focus on the new current window
 }
+
+void switch_between_windows(WM* self, XWindow window) {
+    if (self->current_client == NULL || self->head_client == NULL) {
+        return;
+    }
+
+    Client* client;
+    if (self->current_client->next_client == NULL) {
+        client = self->head_client;
+    } else {
+        client = self->current_client->next_client;
+    }
+    
+    self->current_client = client;
+    xraise_window(self->display, self->current_client->window);
+    update_clients(self);
+}

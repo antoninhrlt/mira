@@ -12,31 +12,55 @@
 #include "wm/handler.h"
 #include "wm/wm.h"
 
-void init_handler(WM* wm) {    
+void init_handler(WM* wm) {
+    // ALT + click left
     xgrab_button(
-        wm->display, 
-        1, 
-        Mod1Mask, 
-        xdefault_root_window(wm->display), 
-        True,
-        ButtonPressMask | ButtonReleaseMask | PointerMotionMask, 
-        GrabModeAsync, 
-        GrabModeAsync, 
-        None, 
+        wm->display,
+        Button1,
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        ButtonPressMask | ButtonReleaseMask | ButtonMotionMask,
+        GrabModeAsync,
+        GrabModeAsync,
+        None,
+        None
+    );
+
+    // ALT + click right
+    xgrab_button(
+        wm->display,
+        Button3,
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        ButtonPressMask | ButtonReleaseMask | ButtonMotionMask,
+        GrabModeAsync,
+        GrabModeAsync,
+        None,
         None
     );
     
-    xgrab_button(
-        wm->display, 
-        3, 
-        Mod1Mask, 
-        xdefault_root_window(wm->display), 
-        True,
-        ButtonPressMask | ButtonReleaseMask | PointerMotionMask, 
-        GrabModeAsync, 
-        GrabModeAsync, 
-        None, 
-        None
+    // ALT + F4
+    xgrab_key(
+        wm->display,
+        xkeysym_to_keycode(wm->display, XK_F4),
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        GrabModeAsync,
+        GrabModeAsync
+    );
+
+    // ALT + TAB
+    xgrab_key(
+        wm->display,
+        xkeysym_to_keycode(wm->display, XK_Tab),
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        GrabModeAsync,
+        GrabModeAsync
     );
 
     xset_error_handler(&on_xerror);
@@ -55,7 +79,7 @@ void update_handler(WM* wm) {
 void handle(WM* wm) {
     switch (wm->event.type) {
         case KeyPress:
-            on_keypress(wm);
+            on_keypress(wm, wm->event.xkey);
             break;
         case ButtonPress:
             on_button_press(wm, wm->event.xbutton);
@@ -83,8 +107,18 @@ void handle(WM* wm) {
     }
 }
 
-void on_keypress(WM* wm) {
+void on_keypress(WM* wm, XKeyEvent event) {
     assert(wm->event.type == KeyPress);
+
+    if (!(event.state & Mod1Mask)) {
+        return;
+    }
+    
+    if (event.keycode == xkeysym_to_keycode(wm->display, XK_F4)) {
+        kill_client(wm->current_client, wm);
+    } else if (event.keycode == xkeysym_to_keycode(wm->display, XK_Tab)) {
+        switch_between_windows(wm, event.window);
+    }
 }
 
 void on_button_press(WM* wm, XButtonEvent event) {

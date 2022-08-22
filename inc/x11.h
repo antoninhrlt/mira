@@ -38,6 +38,9 @@
 #define xset_window_background  XSetWindowBackground
 #define xset_error_handler  XSetErrorHandler
 #define xget_error_text XGetErrorText
+#define xgrab_key   XGrabKey
+#define xinter_atom XInternAtom
+#define xsend_event XSendEvent
 
 const char* xrequest_code_to_string(unsigned char request_code);
 
