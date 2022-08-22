@@ -24,4 +24,6 @@ void on_configure_request(WM* wm, XConfigureRequestEvent event);
 void on_configure_notify(WM* wm, XConfigureEvent event);
 void on_destroy_notify(WM* wm, XDestroyWindowEvent event);
 
+static int on_xerror(XDisplay* display, XErrorEvent* event);
+
 #endif // MIRA_HANDLER

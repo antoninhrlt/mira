@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "x11.h"
 
@@ -37,6 +38,8 @@ void init_handler(WM* wm) {
         None, 
         None
     );
+
+    xset_error_handler(&on_xerror);
 
     xselect_input(
         wm->display,
@@ -180,4 +183,22 @@ void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
     remove_window(wm, event.window);
     printf("HAPPY 4\n");
     update_clients(wm);
+}
+
+static int on_xerror(XDisplay* display, XErrorEvent* ptr_event) {
+    XErrorEvent event = *ptr_event;
+
+    char error[2048];
+    xget_error_text(display, event.error_code, error, sizeof(error));
+    
+    printf(
+        "[mira] Received X11 error (req_code = %s(%i), err_code = %i):\n%s\nresource id = %li", 
+        xrequest_code_to_string(event.request_code),
+        (int) event.request_code,
+        event.error_code,
+        error,
+        event.resourceid
+    );
+
+    return 0;
 }
