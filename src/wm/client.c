@@ -7,6 +7,7 @@
 #include "x11.h"
 
 #include "wm/client.h"
+#include "wm/tiling.h"
 #include "wm/wm.h"
 
 Client new_client(XWindow window) {
@@ -19,6 +20,18 @@ void free_client(Client* self) {
     self->previous_client = (Client*) NULL;
     self->window = (XWindow) NULL;
     self = (Client*) NULL;
+}
+
+Client* client_from_window(XWindow window, WM* wm) {
+    Client* client = wm->head_client;
+
+    for (; client; client = client->next_client) {
+        if (client->window == window) {
+            return client;
+        }
+    }
+
+    return NULL;
 }
 
 void set_client_defaults(Client* self, WM* wm) {
@@ -44,21 +57,49 @@ void set_client_defaults(Client* self, WM* wm) {
     );
 }
 
-void tile_client(Client* self, WM* wm) {
+void tile_client(Client* self, WM* wm, TilingMode tiling_mode) {
     if (wm->head_client == NULL) {
         return;
     }
 
-    // Full-screen
+    int x = 0;
+    int y = 0;
+    int width = 0;
+    int height = 0;
+
+    const int DISPLAY_WIDTH = xdisplay_width(wm->display, xdefault_screen(wm->display));
+    const int DISPLAY_HEIGHT = xdisplay_height(wm->display, xdefault_screen(wm->display));
+
+    switch (tiling_mode) {
+        case Full:
+            width = DISPLAY_WIDTH - WINDOW_BORDER_WIDTH * 2;
+            height = DISPLAY_HEIGHT - WINDOW_BORDER_WIDTH * 2;
+            break;
+        case LeftHalf:
+            width = DISPLAY_WIDTH / 2 - WINDOW_BORDER_WIDTH * 2;
+            height = DISPLAY_HEIGHT - WINDOW_BORDER_WIDTH * 2;
+            break;
+        case RightHalf:
+            x = DISPLAY_WIDTH / 2;
+            width = DISPLAY_WIDTH / 2 - WINDOW_BORDER_WIDTH * 2;
+            height = DISPLAY_HEIGHT - WINDOW_BORDER_WIDTH * 2;
+            break;
+        case BottomHalf:
+            y = DISPLAY_HEIGHT / 2;
+            width = DISPLAY_WIDTH - WINDOW_BORDER_WIDTH * 2;
+            height = DISPLAY_HEIGHT / 2 - WINDOW_BORDER_WIDTH * 2;
+            break;
+        default:
+            break;
+    }
+
     xmove_resize_window(
         wm->display,
         self->window,
-        0,
-        0,
-        xdisplay_width(wm->display, xdefault_screen(wm->display)) 
-            - WINDOW_BORDER_WIDTH * 2,
-        xdisplay_height(wm->display, xdefault_screen(wm->display)) 
-            - WINDOW_BORDER_WIDTH * 2
+        x,
+        y,
+        width,
+        height
     );
 }
 

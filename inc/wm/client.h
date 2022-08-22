@@ -7,6 +7,8 @@
 
 #include "x11.h"
 
+#include "wm/tiling.h"
+
 typedef struct wm WM;
 
 #define WINDOW_BORDER_WIDTH 2
@@ -24,8 +26,10 @@ struct client {
 Client new_client(XWindow window);
 void free_client(Client* self);
 
+Client* client_from_window(XWindow window, WM* wm);
+
 void set_client_defaults(Client* self, WM* wm);
-void tile_client(Client* self, WM* wm);
+void tile_client(Client* self, WM* wm, TilingMode tiling_mode);
 void update_clients(WM* wm);
 void kill_client(Client* self, WM* wm);
 

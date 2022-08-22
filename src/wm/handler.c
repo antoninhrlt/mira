@@ -10,6 +10,7 @@
 
 #include "wm/client.h"
 #include "wm/handler.h"
+#include "wm/tiling.h"
 #include "wm/wm.h"
 
 void init_handler(WM* wm) {
@@ -56,6 +57,50 @@ void init_handler(WM* wm) {
     xgrab_key(
         wm->display,
         xkeysym_to_keycode(wm->display, XK_Tab),
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        GrabModeAsync,
+        GrabModeAsync
+    );
+
+    // ALT + Left arrow
+    xgrab_key(
+        wm->display,
+        xkeysym_to_keycode(wm->display, XK_Left),
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        GrabModeAsync,
+        GrabModeAsync
+    );
+
+    // ALT + Right arrow
+    xgrab_key(
+        wm->display,
+        xkeysym_to_keycode(wm->display, XK_Right),
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        GrabModeAsync,
+        GrabModeAsync
+    );
+
+    // ALT + Up arrow
+    xgrab_key(
+        wm->display,
+        xkeysym_to_keycode(wm->display, XK_Up),
+        Mod1Mask,
+        xdefault_root_window(wm->display),
+        false,
+        GrabModeAsync,
+        GrabModeAsync
+    );
+
+    // ALT + Down arrow
+    xgrab_key(
+        wm->display,
+        xkeysym_to_keycode(wm->display, XK_Down),
         Mod1Mask,
         xdefault_root_window(wm->display),
         false,
@@ -118,6 +163,14 @@ void on_keypress(WM* wm, XKeyEvent event) {
         kill_client(wm->current_client, wm);
     } else if (event.keycode == xkeysym_to_keycode(wm->display, XK_Tab)) {
         switch_between_windows(wm, event.window);
+    } else if (event.keycode == xkeysym_to_keycode(wm->display, XK_Up)) {
+        tile_client(wm->current_client, wm, Full);
+    } else if (event.keycode == xkeysym_to_keycode(wm->display, XK_Left)) {
+        tile_client(wm->current_client, wm, LeftHalf);
+    } else if (event.keycode == xkeysym_to_keycode(wm->display, XK_Right)) {
+        tile_client(wm->current_client, wm, RightHalf);
+    } else if (event.keycode == xkeysym_to_keycode(wm->display, XK_Down)) {
+        tile_client(wm->current_client, wm, BottomHalf);
     }
 }
 
@@ -131,13 +184,8 @@ void on_button_press(WM* wm, XButtonEvent event) {
         &wm->window_attrs
     );
 
-    Client* client = wm->head_client;
-
-    for (; client; client = client->next_client) {
-        if (client->window == event.subwindow) {
-            break;
-        }
-    }
+    Client* client = client_from_window(event.subwindow, wm);
+    assert(client != NULL);
 
     wm->current_client = client;
 
@@ -185,7 +233,7 @@ void on_map_request(WM* wm, XMapRequestEvent event) {
 
     add_window(wm, event.window);
     xmap_window(wm->display, event.window);
-    tile_client(wm->current_client, wm);
+    tile_client(wm->current_client, wm, Full);
     update_clients(wm);
 }
 
@@ -213,17 +261,8 @@ void on_configure_notify(WM* wm, XConfigureEvent event) {
 }
 
 void on_destroy_notify(WM* wm, XDestroyWindowEvent event) {
-    Client* client = wm->head_client;
-    
-    bool is_found = false;
-    for (; client; client = client->next_client) {
-        if (event.window == client->window) {
-            is_found = true;
-            break;
-        }
-    }
-
-    if (!is_found) {
+    Client* client = client_from_window(event.window, wm);
+    if (client == NULL) {
         return;
     }
 
