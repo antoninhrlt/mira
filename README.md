@@ -14,7 +14,7 @@ Save the document.
 Now, give you the rights to run a window manager from user mode :
 ```
 sudo usermod -aG tty <username>
-sudo usermod -aG server <username>
+sudo usermod -aG video <username>
 ```
 
 Disable your desktop manager (example with "ssdm" would be `sudo systemctl disable ssdm.service --force`). 
