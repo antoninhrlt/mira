@@ -5,7 +5,11 @@
 /// Review for the X11 header file to get better names following this project's
 /// naming convention
 
+#ifndef MIRA_X11
+#define MIRA_X11
+
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 #define XDisplay    Display
 #define XWindow Window
@@ -32,3 +36,9 @@
 #define xroot_window    XRootWindow
 #define xselect_input   XSelectInput
 #define xset_window_background  XSetWindowBackground
+#define xset_error_handler  XSetErrorHandler
+#define xget_error_text XGetErrorText
+
+const char* xrequest_code_to_string(unsigned char request_code);
+
+#endif // MIRA_X11
