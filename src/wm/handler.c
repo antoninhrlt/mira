@@ -58,7 +58,7 @@ void handle(WM* wm) {
             on_keypress(wm);
             break;
         case ButtonPress:
-            on_button_press(wm);
+            on_button_press(wm, wm->event.xbutton);
             break;
         case ButtonRelease:
             on_button_release(wm);
@@ -87,17 +87,30 @@ void on_keypress(WM* wm) {
     assert(wm->event.type == KeyPress);
 }
 
-void on_button_press(WM* wm) {
+void on_button_press(WM* wm, XButtonEvent event) {
     assert(wm->event.type == ButtonPress);
 
-    // Select the window
+    // Selects the window
     xget_window_attributes(
         wm->display, 
-        wm->event.xbutton.subwindow,
+        event.subwindow,
         &wm->window_attrs
     );
 
+    Client* client = wm->head_client;
+
+    for (; client; client = client->next_client) {
+        if (client->window == event.subwindow) {
+            break;
+        }
+    }
+
+    wm->current_client = client;
+
+    wm->event.xbutton = event;
     wm->button_event = wm->event.xbutton;
+    
+    update_clients(wm);
 }
 
 void on_button_release(WM* wm) {

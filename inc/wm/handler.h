@@ -16,7 +16,7 @@ void update_handler(WM* wm);
 void handle(WM* wm);
 
 void on_keypress(WM* wm);
-void on_button_press(WM* wm);
+void on_button_press(WM* wm, XButtonEvent event);
 void on_button_release(WM* wm);
 void on_motion_notify(WM* wm);
 void on_map_request(WM* wm, XMapRequestEvent event);
