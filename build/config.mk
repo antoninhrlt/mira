@@ -5,4 +5,4 @@
 CC = gcc
 CC_DEBUG_FLAGS = -W -Wall -Wextra -g -pedantic
 
-CC_DEPS = -lX11
+CC_DEPS = -lX11 -Llib -ltoml

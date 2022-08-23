@@ -9,8 +9,10 @@ _init :
 
 build : _init wm_build
 
-run : build
-	xinit ./build/xinitrc
+run : build install
+	/usr/bin/startmira
+
+install : build
 
 test : build
 	Xephyr -ac -screen 1280x720 -br -reset -terminate 2> /dev/null :100 &
