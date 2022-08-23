@@ -9,10 +9,8 @@ _init :
 
 build : _init wm_build
 
-run : build install
-	/usr/bin/startmira
-
 install : build
+	sudo ./install.sh
 
 test : build
 	Xephyr -ac -screen 1280x720 -br -reset -terminate 2> /dev/null :100 &
