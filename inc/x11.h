@@ -13,6 +13,8 @@
 
 #define XDisplay    Display
 #define XWindow Window
+#define XGraphicsContext    GC
+#define XPixmap Pixmap
 
 #define xopen_display   XOpenDisplay
 #define xclose_display  XCloseDisplay
@@ -41,6 +43,10 @@
 #define xgrab_key   XGrabKey
 #define xinter_atom XInternAtom
 #define xsend_event XSendEvent
+#define xdefault_graphics_ctx   DefaultGC
+#define xcreate_pixmap  XCreatePixmap
+#define xdefault_depth  XDefaultDepth
+#define xdraw_rectangle XDrawRectangle
 
 const char* xrequest_code_to_string(unsigned char request_code);
 

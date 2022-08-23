@@ -18,6 +18,8 @@ typedef struct wm {
 
     Client* head_client;
     Client* current_client;
+
+    XGraphicsContext graphics_ctx;
 } WM;
 
 WM new_wm(void);
