@@ -2,3 +2,4 @@ build/out/
 include/toml.h
 lib/*.a
 lib/*.so*
+tomlc99/
