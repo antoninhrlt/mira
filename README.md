@@ -13,7 +13,7 @@ You can type `startmira` to start the window manager
 ## Uninstall
 Oh, tell me why you want to uninstall it by [email](mailto:antonherault@gmail.com). Is that because you don't like it ?
 
-Enable back your desktop manager (example width "ssdm" would be `sudo systemctl enable ssdm.service --force`)
+Enable back your desktop manager (example width "sddm" would be `sudo systemctl enable sddm.service --force`)
 
 After reboot, you will see a login screen, you go back your desktop environment !
 

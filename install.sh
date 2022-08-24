@@ -69,4 +69,4 @@ chmod 777 $START_MIRA
 
 #
 #
-echo "Please, disable your desktop manager (lightdm, ssdm, ...). Then, reboot"
+echo "Please, disable your desktop manager (lightdm, sddm, ...). Then, reboot"
